@@ -1,9 +1,8 @@
-
-
 <aside class="probootstrap-aside js-probootstrap-aside active">
     <a href="#" class="probootstrap-close-menu js-probootstrap-close-menu d-md-none">
-        <i class="fa fa-arrow-left"></i> Close
-      </a>
+        Close
+        <i class="fa fa-arrow-right"></i>
+    </a>
     <div class="probootstrap-site-logo probootstrap-animate fadeInLeft probootstrap-animated"
         data-animate-effect="fadeInLeft">
 
@@ -14,20 +13,34 @@
     <div class="probootstrap-overflow">
         <nav class="probootstrap-nav">
             <ul>
-                <li class="probootstrap-animate active fadeInLeft probootstrap-animated"
-                    data-animate-effect="fadeInLeft"><a href="index.html">Home</a></li>
-                <li class="probootstrap-animate fadeInLeft probootstrap-animated" data-animate-effect="fadeInLeft"><a
-                        href="about.html">About</a></li>
-                <li class="probootstrap-animate fadeInLeft probootstrap-animated" data-animate-effect="fadeInLeft"><a
-                        href="services.html">Services</a></li>
-                <li class="probootstrap-animate fadeInLeft probootstrap-animated" data-animate-effect="fadeInLeft"><a
-                        href="portfolio.html">Portfolio</a></li>
-                <li class="probootstrap-animate fadeInLeft probootstrap-animated" data-animate-effect="fadeInLeft"><a
-                        href="contact.html">Contact</a></li>
+                <!-- LIVE ACCESS ONLY -->
+                <li class="probootstrap-animate fadeInLeft" data-mode="live">
+                    <a href="#" id="receive-pictures">
+                        <i class="fa fa-envelope mr-2"></i> Receive all my pictures
+                    </a>
+                </li>
+                <li class="probootstrap-animate fadeInLeft" data-mode="live">
+                    <a href="#" id="invite-friend-qr">
+                        <i class="fa fa-mobile mr-2"></i> Invite a friend (QR)
+                    </a>
+                </li>
+
+                <!-- LONG-TERM ACCESS ONLY -->
+                <li class="probootstrap-animate fadeInLeft" data-mode="longterm">
+                    <a href="#" id="invite-friend-email">
+                        <i class="fa fa-user-plus mr-2"></i> Invite a friend (Email)
+                    </a>
+                </li>
+                <li class="probootstrap-animate fadeInLeft" data-mode="longterm">
+                    <a href="/download/album.zip">
+                        <i class="fa fa-download mr-2"></i> Download all pictures
+                    </a>
+                </li>
+
             </ul>
         </nav>
         <footer class="probootstrap-aside-footer probootstrap-animate fadeInLeft probootstrap-animated"
-            data-animate-effect="fadeInLeft">
+            data-animate-effect="fadeInRight">
             <ul class="list-unstyled d-flex probootstrap-aside-social">
                 <li><a href="#" class="p-2"><i class="fa fa-twitter"></i></a></li>
                 <li><a href="#" class="p-2"><span class="fa fa-instagram"></span></a></li>

@@ -99,4 +99,13 @@ $(function(){
 
 
 
+    function fetchNewPhotos() {
+        return new Promise((resolve) => {
+          console.log("Fetching new photos...");
+          // Example AJAX fetch or logic to load photos
+          // Update DOM with new images if needed
+          setTimeout(resolve, 1000); // Simulate delay
+        });
+      }
+
 });

@@ -26,26 +26,25 @@ html {
   .text-primary {
     color: #1FAD9F !important; }
 
-  .probootstrap-aside {
-    height: 100vh;
-    width: 250px;
-    position: fixed;
-    top: 0;
-    float: left;
-    min-height: 500px;
-    overflow-y: scroll;
-    -webkit-transition: .3s all ease;
-    -o-transition: .3s all ease;
-    transition: .3s all ease;
-    background: #fff;
-    z-index: 10;
-    font-size: 16px;
-    line-height: 1.5; }
+    .probootstrap-aside {
+        height: 100vh;
+        width: 250px;
+        position: fixed;
+        top: 0;
+        right: 0;
+        min-height: 500px;
+        overflow-y: scroll;
+        background: #fff;
+        z-index: 10;
+        font-size: 16px;
+        line-height: 1.5;
+        transition: 0.3s all ease;
+      }
     @media screen and (max-width: 768px) {
       .probootstrap-aside {
-        -webkit-transform: translateX(-250px);
-        -ms-transform: translateX(-250px);
-        transform: translateX(-250px);
+        -webkit-transform: translateX(250px);
+        -ms-transform: translateX(250px);
+        transform: translateX(250px);
         padding-top: 40px; } }
     .probootstrap-aside.active {
       -webkit-transform: translateX(0px);
@@ -53,7 +52,7 @@ html {
       transform: translateX(0px); }
     .probootstrap-aside .probootstrap-close-menu {
       position: absolute;
-      right: 15px;
+      left: 15px;
       color: #000;
       font-size: 14px;
       top: 20px;
@@ -126,7 +125,7 @@ html {
 
   .probootstrap-main {
     width: calc(100% - 250px);
-    float: right;
+    float: left;
     padding: 30px;
     position: relative; }
     .probootstrap-main:before {
@@ -166,7 +165,7 @@ html {
           transform: translateY(0%); } }
       .probootstrap-main .probootstrap-bar .probootstrap-toggle {
         position: absolute;
-        left: 15px;
+        right: 15px;
         font-size: 20px;
         color: #000;
         z-index: 2;

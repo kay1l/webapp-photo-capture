@@ -1,0 +1,43 @@
+#photo-loader {
+    display: none;
+    text-align: center;
+    padding: 30px 0;
+    color: #666;
+}
+
+#photo-loader i {
+    font-size: 30px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+.refresh-button {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10;
+    background: none;
+    padding: 0.5rem 0.6rem;
+    outline: none;
+    border: none;
+    cursor: pointer;
+
+}
+
+.refresh-button:hover {
+    transform: rotate(90deg);
+}
+
+.refresh-button i {
+    font-size: 1.2rem;
+    color: #333;
+}
+
