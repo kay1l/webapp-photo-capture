@@ -175,6 +175,7 @@
         </div>
 
     </main>
+    @include('partials.shared-modal')
 
     <script src="{{ asset('assets/js/jquery-3.2.1.slim.min.js') }}"></script>
     <script src="{{ asset('assets/js/popper.min.js') }}"></script>

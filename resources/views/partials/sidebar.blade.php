@@ -1,4 +1,4 @@
-<aside class="probootstrap-aside js-probootstrap-aside active">
+<aside class="probootstrap-aside js-probootstrap-aside active ">
     <a href="#" class="probootstrap-close-menu js-probootstrap-close-menu d-md-none">
         Close
         <i class="fa fa-arrow-right"></i>
@@ -14,11 +14,11 @@
         <nav class="probootstrap-nav">
             <ul>
                 <!-- LIVE ACCESS ONLY -->
-                <li class="probootstrap-animate fadeInLeft" data-mode="live">
-                    <a href="#" id="receive-pictures">
-                        <i class="fa fa-envelope mr-2"></i> Receive all my pictures
-                    </a>
-                </li>
+                    <li class="probootstrap-animate fadeInLeft" data-mode="live">
+                        <a href="#" id="receive-pictures">
+                            <i class="fa fa-envelope mr-2"></i> Receive all my pictures
+                        </a>
+                    </li>
                 <li class="probootstrap-animate fadeInLeft" data-mode="live">
                     <a href="#" id="invite-friend-qr">
                         <i class="fa fa-mobile mr-2"></i> Invite a friend (QR)
