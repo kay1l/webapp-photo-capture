@@ -16,19 +16,19 @@
                 <!-- LIVE ACCESS ONLY -->
                     <li class="probootstrap-animate fadeInLeft" data-mode="live">
                         <a href="#" id="receive-pictures">
-                            <i class="fa fa-envelope mr-2"></i> Receive all my pictures
+                            <i class="fa fa-envelope mt-5 mr-2 mb-3"></i> Receive all my pictures
                         </a>
                     </li>
-                <li class="probootstrap-animate fadeInLeft" data-mode="live">
-                    <a href="#" id="invite-friend-qr">
-                        <i class="fa fa-mobile mr-2"></i> Invite a friend (QR)
-                    </a>
-                </li>
+                    <li class="probootstrap-animate fadeInLeft" data-mode="live">
+                        <a href="#" id="invite-friend-qr">
+                          <i class="fa fa-mobile mr-2" style="font-size: 1.5em;"></i> Invite a friend (QR)
+                        </a>
+                      </li>
 
                 <!-- LONG-TERM ACCESS ONLY -->
                 <li class="probootstrap-animate fadeInLeft" data-mode="longterm">
                     <a href="#" id="invite-friend-email">
-                        <i class="fa fa-user-plus mr-2"></i> Invite a friend (Email)
+                        <i class="fa fa-user-plus mr-2 mb-3"></i> Invite a friend (Email)
                     </a>
                 </li>
                 <li class="probootstrap-animate fadeInLeft" data-mode="longterm">
