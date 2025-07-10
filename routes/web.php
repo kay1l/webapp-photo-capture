@@ -2,11 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AlbumController;
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-
+use App\Http\Controllers\PhotographerController;
 
 Route::get('/', function () {
     return view('welcome', [
@@ -19,10 +15,17 @@ Route::get('/', function () {
             (object)['filename' => 'photo3.jpg'],
         ])
     ]);
-});
-Route::get('/album/{album}/{user}/{hash}', [AlbumController::class, 'show'])->name('album.view');
+})->name('home');
 
-Route::post('/photographer/receive-link', [PhotographerController::class, 'receiveLink']);
-Route::post('/photographer/invite-email', [PhotographerController::class, 'inviteFriendEmail']);
-Route::post('/photographer/invite-qr', [PhotographerController::class, 'generateQr']);
-Route::get('/photographer/download/{albumId}', [PhotographerController::class, 'downloadZip'])->name('photographer.download');
+// Album view route with hash protection
+Route::middleware('validate.token')->group(function () {
+    Route::get('/album/{album}/{user}/{hash}', [AlbumController::class, 'show'])->name('album.view');
+});
+
+// Photographer functionality routes
+Route::prefix('photographer')->name('photographer.')->group(function () {
+    Route::post('/receive-link', [PhotographerController::class, 'receiveLink'])->name('receive-link');
+    Route::post('/invite-email', [PhotographerController::class, 'inviteFriendEmail'])->name('invite-email');
+    Route::post('/invite-qr', [PhotographerController::class, 'generateQr'])->name('invite-qr');
+    Route::get('/download/{albumId}', [PhotographerController::class, 'downloadZip'])->name('download');
+});
