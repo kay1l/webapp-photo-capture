@@ -19,6 +19,11 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->timestamp('date_add')->nullable();
+            $table->foreignId('album_id')->constrained()->onDelete('cascade');
+            $table->string('email')->nullable();
+            $table->string('name')->nullable();
+            $table->text('log')->nullable(); // could be JSON
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

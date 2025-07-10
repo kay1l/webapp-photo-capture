@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Photobooth extends Model
+{
+    protected $fillable = ['venue_id', 'name'];
+
+    public function venue() {
+        return $this->belongsTo(Venue::class);
+    }
+}
