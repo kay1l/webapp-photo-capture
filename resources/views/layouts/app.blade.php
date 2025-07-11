@@ -46,119 +46,17 @@
             <div class="probootstrap-main-site-logo"><a href="index.html">MuseumCam</a></div>
         </div>
         <div class="card-columns">
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate fadeInUp probootstrap-animated" src="images/img_1.jpg"
-                        alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate fadeInUp probootstrap-animated" src="images/img_2.jpg"
-                        alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate fadeInUp probootstrap-animated" src="images/img_3.jpg"
-                        alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate" src="images/img_4.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate" src="images/img_5.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate" src="images/img_6.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate" src="images/img_7.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate" src="images/img_8.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate fadeInUp probootstrap-animated" src="images/img_9.jpg"
-                        alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate fadeInUp probootstrap-animated"
-                        src="images/img_10.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate fadeInUp probootstrap-animated"
-                        src="images/img_11.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate" src="images/img_12.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate" src="images/img_13.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate" src="images/img_14.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate" src="images/img_15.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate fadeInUp probootstrap-animated"
-                        src="images/img_16.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate fadeInUp probootstrap-animated"
-                        src="images/img_17.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate" src="images/img_18.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate" src="images/img_19.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate" src="images/img_20.jpg" alt="Card image cap">
-                </a>
-            </div>
-            <div class="card img-loaded">
-                <a href="single.html">
-                    <img class="card-img-top probootstrap-animate" src="images/img_21.jpg" alt="Card image cap">
-                </a>
-            </div>
+            @forelse ($captures as $capture)
+                <div class="card img-loaded">
+                    <a href="{{ asset('storage/photos/' . $capture->filename) }}" target="_blank">
+                        <img class="card-img-top probootstrap-animate fadeInUp"
+                             src="{{ asset('storage/photos/' . $capture->filename) }}"
+                             alt="Captured photo">
+                    </a>
+                </div>
+            @empty
+                <p>No photos found for this album.</p>
+            @endforelse
         </div>
 
         <div class="container-fluid d-md-none">

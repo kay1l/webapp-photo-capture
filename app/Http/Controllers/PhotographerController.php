@@ -81,22 +81,26 @@ class PhotographerController extends Controller
             'album_id' => $album->id,
             'email' => null,
             'name' => null,
-            'log' => ''
+            'log' => '',
+            'date_add' => now(),
         ]);
+
+        $hash = substr(hash('sha256', env('HASH_SECRET') . $album->id . $newUser->id), 0, 16);
 
         $url = route('album.view', [
-            'albumId' => $album->id,
-            'userId' => $newUser->id,
-            'hash' => hash('sha256', "SALT123{$album->id}{$newUser->id}")
+            'album' => $album->id,
+            'user' => $newUser->id,
+            'hash' => $hash
         ]);
 
 
-        $qrSvg = QrCode::size(300)->generate($url);
+        $qrSvg = \QrCode::size(300)->generate($url);
+        $svg_base64 = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
 
         return response()->json([
             'success' => true,
             'url' => $url,
-            'qr_svg' => $qrSvg
+            'qr_svg' => $svg_base64
         ]);
     }
 

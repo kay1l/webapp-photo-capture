@@ -115,7 +115,7 @@
                     openModal(`
         <h3><i class="fa fa-mobile mr-2"></i> Invite a friend to this album</h3>
         <p>Scan this QR code to open the same live album on another phone.</p>
-        <img src="${data.qr_image}" alt="QR Code" style="max-width:200px; margin: 1rem 0;" />
+        <img src="${data.qr_svg}" alt="QR Code" style="max-width:200px; margin: 1rem 0;" />
         <p>This QR code works only while this album is alive. A new QR code replaces the one printed on the device.</p>
       `);
                 } else {
