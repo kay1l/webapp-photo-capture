@@ -48,9 +48,9 @@
                 <div class="probootstrap-main-site-logo"><a href="index.html">MuseumCam</a></div>
             </div>
             <div class="card-columns">
-                <div class="card img-loaded image-preview-link" data-src="images/img_1.jpg">
+                <div class="card img-loaded image-preview-link" data-full-src="images/img_1.jpg">
                     <a href="#">
-                        <img class="card-img-top probootstrap-animate fadeInUp probootstrap-animated"
+                        <img class="card-img-top  probootstrap-animate fadeInUp probootstrap-animated"
                              src="images/img_1.jpg" alt="Card image cap">
                     </a>
                 </div>
