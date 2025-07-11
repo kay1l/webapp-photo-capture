@@ -21,8 +21,6 @@ return new class extends Migration
             $table->timestamps();
             $table->timestamp('date_add')->nullable();
             $table->foreignId('album_id')->constrained()->onDelete('cascade');
-            $table->string('email')->nullable();
-            $table->string('name')->nullable();
             $table->text('log')->nullable(); // could be JSON
         });
 

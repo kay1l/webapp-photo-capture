@@ -10,6 +10,7 @@ use App\Models\Album;
 use App\Models\User;
 use App\Models\Capture;
 use App\Models\Invitation;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PhotographerController extends Controller
 {
@@ -89,8 +90,14 @@ class PhotographerController extends Controller
             'hash' => hash('sha256', "SALT123{$album->id}{$newUser->id}")
         ]);
 
-        // Return QR code data (frontend can render it)
-        return response()->json(['success' => true, 'url' => $url]);
+
+        $qrSvg = QrCode::size(300)->generate($url);
+
+        return response()->json([
+            'success' => true,
+            'url' => $url,
+            'qr_svg' => $qrSvg
+        ]);
     }
 
     public function downloadZip($albumId)
@@ -119,4 +126,52 @@ class PhotographerController extends Controller
 
         return response()->download($zipFile);
     }
+    public function startSession($deviceId, $hash)
+{
+
+    $expectedHash = substr(hash('sha256', 'SALT123' . $deviceId), 0, 16);
+    if ($hash !== $expectedHash) {
+        abort(403, 'Invalid device token');
+    }
+
+    $remote = Remote::findOrFail($deviceId);
+
+    $liveAlbum = Album::where('remote_id', $remote->id)->where('status', 'live')->first();
+    if ($liveAlbum) {
+        abort(403, 'This device is already in use.');
+    }
+
+    $album = Album::create([
+        'remote_id' => $remote->id,
+        'venue_id' => $remote->venue_id,
+        'date_add' => now(),
+        'status' => 'live'
+    ]);
+
+    $user = User::create([
+        'album_id' => $album->id,
+        'email' => request()->get('email', null),
+        'name' => null,
+        'log' => ''
+    ]);
+
+    $secureHash = substr(hash('sha256', 'SALT123' . $album->id . $user->id), 0, 16);
+
+    Cookie::queue(cookie('user_access_token', $secureHash, 43200));
+
+    if ($user->email) {
+        $url = route('album.view', [
+            'album' => $album->id,
+            'user' => $user->id,
+            'hash' => $secureHash
+        ]);
+        Mail::to($user->email)->send(new \App\Mail\SecureAlbumLink($url));
+    }
+
+    return redirect()->route('album.view', [
+        'album' => $album->id,
+        'user' => $user->id,
+        'hash' => $secureHash
+    ]);
+}
 }

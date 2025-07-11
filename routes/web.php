@@ -28,4 +28,6 @@ Route::prefix('photographer')->name('photographer.')->group(function () {
     Route::post('/invite-email', [PhotographerController::class, 'inviteFriendEmail'])->name('invite-email');
     Route::post('/invite-qr', [PhotographerController::class, 'generateQr'])->name('invite-qr');
     Route::get('/download/{albumId}', [PhotographerController::class, 'downloadZip'])->name('download');
+    Route::get('/remote/{device}/{hash}', [PhotographerController::class, 'startSession'])->name('photographer.start');
+
 });
