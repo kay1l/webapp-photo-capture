@@ -23,8 +23,8 @@ class ValidateUserAccessToken
         $cookie = $request->cookie('user_access_token');
 
         if (!$cookie || $cookie !== $expectedHash) {
-            // Set the cookie for future visits
-            cookie()->queue(cookie('user_access_token', $expectedHash, 43200)); // 30 days
+
+            cookie()->queue(cookie('user_access_token', $expectedHash, 43200));
         }
 
         return $next($request);

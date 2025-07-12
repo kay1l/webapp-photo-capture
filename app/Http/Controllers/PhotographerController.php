@@ -36,7 +36,6 @@ class PhotographerController extends Controller
             'hash' => hash('sha256', "SALT123{$album->id}{$user->id}")
         ]);
 
-        // Email the link
         Mail::to($user->email)->send(new \App\Mail\SecureAlbumLink($secureUrl));
 
         return response()->json(['success' => true, 'message' => 'Secure link will be sent to email']);
@@ -77,19 +76,26 @@ class PhotographerController extends Controller
 
         $album = Album::findOrFail($request->album_id);
 
-        $newUser = User::create([
-            'album_id' => $album->id,
-            'email' => null,
-            'name' => null,
-            'log' => '',
-            'date_add' => now(),
-        ]);
+        $existingUser =  User::where('album_id', $album->id)->orderBy('date_add', 'desc')->first();
 
-        $hash = substr(hash('sha256', env('HASH_SECRET') . $album->id . $newUser->id), 0, 16);
+        if($existingUser){
+            $user = $existingUser;
+        }else {
+            $user = User::create([
+                'album_id' => $album->id,
+                'email' => null,
+                'name' => null,
+                'log' => '',
+                'date_add' => now(),
+            ]);
+        }
+
+
+        $hash = substr(hash('sha256', env('HASH_SECRET') . $album->id . $user->id), 0, 16);
 
         $url = route('album.view', [
             'album' => $album->id,
-            'user' => $newUser->id,
+            'user' => $user->id,
             'hash' => $hash
         ]);
 

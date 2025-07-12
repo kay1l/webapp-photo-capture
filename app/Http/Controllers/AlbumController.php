@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Capture;
-
+use App\Models\Album;
 class AlbumController extends Controller
 {
 
@@ -19,7 +19,7 @@ public function show($albumId, $userId, $hash)
         ->orderBy('date_add', 'desc')
         ->get();
 
-    return view('welcome', [
+    return view('album', [
         'album' => $album,
         'captures' => $captures,
         'accessType' => $accessType
