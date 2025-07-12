@@ -3,17 +3,24 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\PhotographerController;
+use App\Models\Album;
+use App\Models\Capture;
+use App\Models\User;
 
 Route::get('/', function () {
-    return view('welcome', [
-        'album' => (object)['id' => 1, 'status' => 'live'],
-        'user' => (object)['id' => 1],
-        'hash' => 'dummyhash123',
-        'captures' => collect([
-            (object)['filename' => 'photo1.jpg'],
-            (object)['filename' => 'photo2.jpg'],
-            (object)['filename' => 'photo3.jpg'],
-        ])
+    $album = Album::has('captures')->latest()->firstOrFail();
+    $captures = Capture::where('album_id', $album->id)
+        ->orderBy('date_add', 'desc')
+        ->get();
+    $user = User::firstOrFail();
+    $hash = substr(hash('sha256', env('HASH_SECRET') . $album->id . $user->id), 0, 16);
+
+    return view('album', [
+        'album' => $album,
+        'user' => $user,
+        'hash' => $hash,
+        'captures' => $captures,
+        'accessType' => $album->status === 'longterm' ? 'longterm' : 'live',
     ]);
 })->name('home');
 

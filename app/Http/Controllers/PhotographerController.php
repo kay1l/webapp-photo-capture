@@ -130,8 +130,7 @@ class PhotographerController extends Controller
 
         return response()->download($zipFile);
     }
-    public function startSession($deviceId, $hash)
-{
+    public function startSession($deviceId, $hash){
 
     $expectedHash = substr(hash('sha256', 'SALT123' . $deviceId), 0, 16);
     if ($hash !== $expectedHash) {

@@ -1,3 +1,4 @@
+
 <aside class="probootstrap-aside js-probootstrap-aside active ">
     <a href="#" class="probootstrap-close-menu js-probootstrap-close-menu d-md-none">
         Close
@@ -51,3 +52,16 @@
         </footer>
     </div>
 </aside>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-mode]').forEach(item => {
+        if (item.getAttribute('data-mode') !== accessType) {
+          item.style.display = 'none';
+        } else {
+          item.style.display = 'block';
+        }
+      });
+    });
+  </script>
+
