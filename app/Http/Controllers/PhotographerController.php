@@ -155,6 +155,8 @@ class PhotographerController extends Controller
                     $photoPath = storage_path("app/public/images/{$capture->filename}");
                     if (file_exists($photoPath)) {
                         $zip->addFile($photoPath, basename($photoPath));
+                    } else {
+                        \Log::warning("Missing image: {$photoPath}");
                     }
                 }
                 $zip->close();
@@ -163,6 +165,8 @@ class PhotographerController extends Controller
 
         return response()->download($zipFile);
     }
+
+
     public function startSession($deviceId, $hash){
 
     $expectedHash = substr(hash('sha256', 'SALT123' . $deviceId), 0, 16);

@@ -33,7 +33,7 @@
                     </a>
                 </li>
                 <li class="probootstrap-animate fadeInLeft" data-mode="longterm">
-                    <a href="/download/album.zip">
+                    <a href="{{route('photographer.download', ['albumId' => $album->id])}}">
                         <i class="fa fa-download mr-2"></i> Download all pictures
                     </a>
                 </li>

@@ -18,16 +18,14 @@ class CaptureSeeder extends Seeder
     {
         $album = Album::first();
 
+       for ($i = 1; $i <= 21; $i++) {
         Capture::create([
             'album_id' => $album->id,
-            'filename' => 'photo1.jpg',
+            'filename' => "img_{$i}.jpg",
             'date_add' => now(),
         ]);
+       }
+       $this->command->info('21 captures inserted.');
 
-        Capture::create([
-            'album_id' => $album->id,
-            'filename' => 'photo2.jpg',
-            'date_add' => now(),
-        ]);
     }
 }
