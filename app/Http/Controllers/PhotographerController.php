@@ -11,9 +11,17 @@ use App\Models\User;
 use App\Models\Capture;
 use App\Models\Invitation;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Flasher\Laravel\Facade\Flasher;
+use App\Mail\SecureAlbumLink;
+use Illuminate\Support\Facades\Log;
+
 
 class PhotographerController extends Controller
 {
+    private function generateAlbumHash($albumId, $userId)
+    {
+        return substr(hash('sha256', env('HASH_SECRET') . $albumId . $userId), 0, 16);
+    }
     public function receiveLink(Request $request)
     {
         $request->validate([
@@ -22,23 +30,30 @@ class PhotographerController extends Controller
         ]);
 
         $album = Album::findOrFail($request->album_id);
-        $user = User::create([
-            'album_id' => $album->id,
-            'email' => $request->email,
-            'name' => null,
-            'log' => ''
-        ]);
+
+        $user = User::where('album_id', $album->id)
+            ->firstOrFail();
 
         $token = Str::random(16);
+        $hash = $this->generateAlbumHash($album->id, $user->id);
         $secureUrl = route('album.view', [
-            'albumId' => $album->id,
-            'userId' => $user->id,
-            'hash' => hash('sha256', "SALT123{$album->id}{$user->id}")
+            'album' => $album->id,
+            'user' => $user,
+            'hash' => $hash
         ]);
 
-        Mail::to($user->email)->send(new \App\Mail\SecureAlbumLink($secureUrl));
-
-        return response()->json(['success' => true, 'message' => 'Secure link will be sent to email']);
+        try {
+            Log::info('Sending email to: ' . $request->email);
+            Log::info('Secure URL: ' . $secureUrl);
+            Mail::to($request->email)->send(new SecureAlbumLink($secureUrl));
+            return response()->json(['success' => true], 200);
+        } catch (\Exception $e) {
+            Log::error('Mail sending failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Server error: unable to send email.'
+            ], 500);
+        }
     }
 
     public function inviteFriendEmail(Request $request)
@@ -62,7 +77,6 @@ class PhotographerController extends Controller
             'hash' => hash('sha256', "SALT123{$album->id}{$newUser->id}")
         ]);
 
-        // Email invitation
         Mail::to($request->friend_email)->send(new \App\Mail\AlbumInvite($secureUrl));
 
         return response()->json(['success' => true, 'message' => 'Invitation sent']);
@@ -91,7 +105,7 @@ class PhotographerController extends Controller
         }
 
 
-        $hash = substr(hash('sha256', env('HASH_SECRET') . $album->id . $user->id), 0, 16);
+        $hash = $this->generateAlbumHash($album->id, $user->id);
 
         $url = route('album.view', [
             'album' => $album->id,
@@ -120,7 +134,6 @@ class PhotographerController extends Controller
 
         $zipFile = storage_path("app/public/album_{$album->id}.zip");
 
-        // Optionally regenerate if not exists
         if (!file_exists($zipFile)) {
             $zip = new \ZipArchive;
             if ($zip->open($zipFile, \ZipArchive::CREATE) === true) {
