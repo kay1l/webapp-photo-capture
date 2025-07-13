@@ -9,9 +9,10 @@
         <p>Loading new photos...</p>
     </div>
 
-    {{-- <button id="manual-refresh-btn" class="refresh-button" aria-label="Refresh">
-        <i class="fa fa-refresh"></i>
-    </button> --}}
+    <button id="manual-refresh-btn" class="refresh-button btn btn-primary mb-3 ml-3" aria-label="Refresh">
+        <i class="fa fa-refresh mr-1"></i> Refresh
+    </button>
+
 
     <div class="probootstrap-bar">
         <a href="#" class="probootstrap-toggle js-probootstrap-toggle"><span

@@ -7,13 +7,29 @@ document.addEventListener('DOMContentLoaded', () => {
     let mouseStartY = 0;
     let isDragging = false;
 
-    async function fetchNewPhotos() {
+    // Expose function globally for reuse
+    window.fetchNewPhotos = async function fetchNewPhotos() {
         if (!photoContainer || !loader) return;
+
+        const fetchUrl = photoContainer.dataset.fetchUrl;
+        if (!fetchUrl) {
+            console.error('Missing data-fetch-url on photoContainer');
+            return;
+        }
 
         loader.style.display = 'block';
 
         try {
-            const res = await fetch(photoContainer.dataset.fetchUrl);
+            const res = await fetch(fetchUrl, {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status} - ${res.statusText}`);
+            }
+
             const newCaptures = await res.json();
 
             const existingIds = Array.from(photoContainer.querySelectorAll('.card[data-id]'))
@@ -36,15 +52,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         } catch (err) {
-            console.error('Error fetching new photos:', err);
+            console.error('Error fetching new photos:', err.message || err);
         } finally {
             loader.style.display = 'none';
         }
-    }
+    };
 
     // Auto refresh
     setInterval(fetchNewPhotos, 20000);
     window.addEventListener('focus', fetchNewPhotos);
+
+    // Manual refresh button
+    const manualBtn = document.getElementById('manual-refresh-btn');
+    if (manualBtn) {
+        manualBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            fetchNewPhotos();
+        });
+    }
 
     // Pull to refresh — touch
     document.addEventListener('touchstart', (e) => {
