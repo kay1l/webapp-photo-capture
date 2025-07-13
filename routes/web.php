@@ -27,6 +27,7 @@ Route::get('/', function () {
 // Album view route with hash protection
 Route::middleware('validate.token')->group(function () {
     Route::get('/album/{album}/{user}/{hash}', [AlbumController::class, 'show'])->name('album.view');
+    Route::get('/album/{album}/captures', [AlbumController::class, 'fetchCaptures'])->name('album.captures');
 });
 
 // Photographer functionality routes

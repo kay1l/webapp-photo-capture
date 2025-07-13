@@ -25,5 +25,14 @@ public function show($albumId, $userId, $hash)
         'accessType' => $accessType
     ]);
 }
+public function fetchCaptures($albumId)
+{
+    $captures = Capture::where('album_id', $albumId)
+        ->orderBy('date_add', 'desc')
+        ->get(['id', 'filename']);
+
+    return response()->json($captures);
+}
+
 
 }

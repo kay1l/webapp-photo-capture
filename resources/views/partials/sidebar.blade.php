@@ -43,7 +43,7 @@
         <footer class="probootstrap-aside-footer probootstrap-animate fadeInLeft probootstrap-animated"
             data-animate-effect="fadeInRight">
             <ul class="list-unstyled d-flex probootstrap-aside-social">
-                <li><a href="#" class="p-2"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="#" class="p-2"><i class="fa fa-github"></i></a></li>
                 <li><a href="#" class="p-2"><span class="fa fa-instagram"></span></a></li>
                 <li><a href="#" class="p-2"><span class="fa fa-linkedin"></span></a></li>
             </ul>
