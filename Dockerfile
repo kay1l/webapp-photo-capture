@@ -1,7 +1,7 @@
 # Base PHP image with Apache
 FROM php:8.2-apache
 
-# Install dependencies and PHP extensions
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
     git zip unzip curl libzip-dev libpng-dev libonig-dev libxml2-dev \
     && docker-php-ext-install pdo pdo_mysql zip gd
@@ -12,28 +12,37 @@ RUN a2enmod rewrite
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy existing Laravel application
-COPY . .
+# Copy only composer files first for caching layer
+COPY composer.json composer.lock ./
 
-# Set permissions for storage and bootstrap cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Install Composer (from official Composer image)
+# Copy Composer from official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install Laravel dependencies
+# Install dependencies first to leverage Docker layer cache
 RUN composer install --no-dev --optimize-autoloader
 
-# Use custom Apache virtual host configuration
+# Copy the rest of the application
+COPY . .
+
+# Set ownership and permissions for Laravel
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+# OPTIONAL: Run Laravel optimization (only works if .env exists)
+# You can comment this out if your .env isn't yet copied by this point
+RUN php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache || true
+
+# Use custom Apache virtual host
 COPY .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
-# Copy startup script and set permissions
+# Copy custom startup script
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
 # Expose port
 EXPOSE 80
 
-# Set container startup command
+# Start container
 CMD ["/start.sh"]
