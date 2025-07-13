@@ -15,6 +15,7 @@
         <link rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+        <link rel="icon" href="{{ asset('images/camera.png') }}" type="image/png">
 
         <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/css/open-iconic-bootstrap.min.css') }}">
@@ -29,7 +30,10 @@
         <meta name="robots" content="noindex, nofollow">
     </head>
 
-    <body data-album-id="{{ $album->id }}">
+    <body data-album-id="{{ $album->id }}"
+          data-album-id="{{ $album->id }}"
+        data-user-id="{{ $user->id }}"
+        data-hash="{{ $hash }}">
 
         @include('partials.sidebar')
 

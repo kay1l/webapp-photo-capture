@@ -1,118 +1,155 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const photoContainer = document.getElementById('photo-container');
-    const loader = document.getElementById('photo-loader');
-    const threshold = 20;
-    let startY = 0;
+document.addEventListener("DOMContentLoaded", () => {
+    const photoContainer = document.getElementById("photo-container");
+    const loader = document.getElementById("photo-loader");
+    const refreshBtn = document.getElementById("manual-refresh-btn");
+    let lastCaptureIds = new Set();
     let isPulling = false;
-    let mouseStartY = 0;
-    let isDragging = false;
+    let startY = 0;
+    const threshold = 50;
 
-    // Expose function globally for reuse
-    window.fetchNewPhotos = async function fetchNewPhotos() {
-        if (!photoContainer || !loader) return;
+    // Helper: Load existing image filenames
+    document.querySelectorAll(".card img").forEach((img) => {
+        const filename = img.src.split("/").pop();
+        lastCaptureIds.add(filename);
+    });
 
-        const fetchUrl = photoContainer.dataset.fetchUrl;
-        if (!fetchUrl) {
-            console.error('Missing data-fetch-url on photoContainer');
-            return;
-        }
+    // Helper: Fetch new images via AJAX
+    function fetchNewPhotos() {
+        loader.style.display = "block";
+        const albumId = document.body.dataset.albumId;
+        const userId = document.body.dataset.userId;
+        const hash = document.body.dataset.hash;
+        const url = `/album/${albumId}/${userId}/${hash}/captures`;
+        fetch(url, {
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        })
+            .then((response) => response.text())
+            .then((html) => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+                const newCards = doc.querySelectorAll(".card.img-loaded");
 
-        loader.style.display = 'block';
+                let newCount = 0;
+                newCards.forEach((card) => {
+                    const img = card.querySelector("img");
+                    const filename = img.src.split("/").pop();
 
-        try {
-            const res = await fetch(fetchUrl, {
-                headers: {
-                    'Accept': 'application/json'
-                }
+                    if (!lastCaptureIds.has(filename)) {
+                        lastCaptureIds.add(filename);
+                        photoContainer.insertBefore(
+                            card,
+                            photoContainer.firstChild
+                        );
+                        newCount++;
+                    }
+                });
+
+                if (newCount > 0)
+                    console.log(`Appended ${newCount} new photo(s).`);
+            })
+            .catch(console.error)
+            .finally(() => {
+                loader.style.display = "none";
             });
-
-            if (!res.ok) {
-                throw new Error(`HTTP ${res.status} - ${res.statusText}`);
-            }
-
-            const newCaptures = await res.json();
-
-            const existingIds = Array.from(photoContainer.querySelectorAll('.card[data-id]'))
-                .map(card => card.getAttribute('data-id'));
-
-            newCaptures.forEach(capture => {
-                if (!existingIds.includes(String(capture.id))) {
-                    const div = document.createElement('div');
-                    div.className = 'card img-loaded image-preview-link';
-                    div.setAttribute('data-id', capture.id);
-                    div.innerHTML = `
-                        <a href="#">
-                            <img class="card-img-top probootstrap-animate fadeInUp probootstrap-animated"
-                                 src="/storage/images/${capture.filename}"
-                                 alt="Photo"
-                                 data-full-src="/storage/images/${capture.filename}">
-                        </a>
-                    `;
-                    photoContainer.prepend(div);
-                }
-            });
-        } catch (err) {
-            console.error('Error fetching new photos:', err.message || err);
-        } finally {
-            loader.style.display = 'none';
-        }
-    };
-
-    // Auto refresh
-    setInterval(fetchNewPhotos, 20000);
-    window.addEventListener('focus', fetchNewPhotos);
-
-    // Manual refresh button
-    const manualBtn = document.getElementById('manual-refresh-btn');
-    if (manualBtn) {
-        manualBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            fetchNewPhotos();
-        });
     }
 
-    // Pull to refresh — touch
-    document.addEventListener('touchstart', (e) => {
+    // Refresh every 20 seconds
+    setInterval(fetchNewPhotos, 20000);
+
+    // Refresh on tab focus
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+            fetchNewPhotos();
+        }
+    });
+
+    // Refresh on window focus
+    window.addEventListener("focus", fetchNewPhotos);
+
+    // Manual refresh button
+    refreshBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        fetchNewPhotos();
+    });
+
+    // Pull-to-refresh gesture (touch)
+    document.addEventListener("touchstart", (e) => {
         if (window.scrollY === 0) {
             startY = e.touches[0].clientY;
             isPulling = true;
         }
     });
 
-    document.addEventListener('touchmove', (e) => {
-        if (!isPulling) return;
-        const currentY = e.touches[0].clientY;
-        const diffY = currentY - startY;
-
-        if (diffY > threshold) {
+    document.addEventListener("touchend", (e) => {
+        if (isPulling) {
+            const endY = e.changedTouches[0].clientY;
+            if (endY - startY > threshold) {
+                fetchNewPhotos();
+            }
             isPulling = false;
-            fetchNewPhotos();
         }
     });
 
-    document.addEventListener('touchend', () => {
-        isPulling = false;
-    });
-
-    // Pull to refresh — mouse
-    document.addEventListener('mousedown', (e) => {
+    // Pull-to-refresh gesture (mouse)
+    document.addEventListener("mousedown", (e) => {
         if (window.scrollY === 0) {
-            mouseStartY = e.clientY;
-            isDragging = true;
+            startY = e.clientY;
+            isPulling = true;
         }
     });
 
-    document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-
-        const diff = e.clientY - mouseStartY;
-        if (diff > threshold) {
-            isDragging = false;
-            fetchNewPhotos();
+    document.addEventListener("mouseup", (e) => {
+        if (isPulling) {
+            const endY = e.clientY;
+            if (endY - startY > threshold) {
+                fetchNewPhotos();
+            }
+            isPulling = false;
         }
     });
 
-    document.addEventListener('mouseup', () => {
-        isDragging = false;
+    // Full image preview on click
+    document.querySelectorAll(".image-preview-link a").forEach((link) => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const img = link.querySelector("img");
+            const fullSrc = img.dataset.fullSrc;
+
+            const modal = document.createElement("div");
+            modal.style.position = "fixed";
+            modal.style.top = 0;
+            modal.style.left = 0;
+            modal.style.width = "100%";
+            modal.style.height = "100%";
+            modal.style.backgroundColor = "rgba(0,0,0,0.8)";
+            modal.style.display = "flex";
+            modal.style.flexDirection = "column";
+            modal.style.alignItems = "center";
+            modal.style.justifyContent = "center";
+            modal.style.zIndex = 9999;
+
+            const fullImg = document.createElement("img");
+            fullImg.src = fullSrc;
+            fullImg.style.maxWidth = "90%";
+            fullImg.style.maxHeight = "80vh";
+            fullImg.style.marginBottom = "10px";
+
+            const instruction = document.createElement("p");
+            instruction.textContent =
+                'Long press the image then tap "Save to Camera Roll"';
+            instruction.style.color = "white";
+            instruction.style.fontSize = "1rem";
+
+            modal.appendChild(fullImg);
+            modal.appendChild(instruction);
+
+            modal.addEventListener("click", () => {
+                document.body.removeChild(modal);
+            });
+
+            document.body.appendChild(modal);
+        });
     });
 });

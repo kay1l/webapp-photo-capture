@@ -21,7 +21,7 @@
     </div>
 
 
-    <div class="card-columns" id="photo-container" data-fetch-url="{{ url('/album/' . $album->id . '/captures') }}">
+    <div class="card-columns" id="photo-container">
         @forelse($captures as $capture)
             <div class="card img-loaded image-preview-link">
                 <a href="#">
@@ -46,7 +46,7 @@
         <div class="row">
             <div class="col-md-12">
                 <ul class="list-unstyled d-flex probootstrap-aside-social">
-                    <li><a href="https://github.com/kay1l" class="p-2"><span class="fa fa-github"></span></a></li>
+                    <li><a href="" class="p-2"><span class="fa fa-github"></span></a></li>
                     <li><a href="#" class="p-2"><span class="fa fa-instagram"></span></a></li>
                     <li><a href="#" class="p-2"><span class="fa fa-linkedin"></span></a></li>
                 </ul>

@@ -25,14 +25,32 @@ public function show($albumId, $userId, $hash)
         'accessType' => $accessType
     ]);
 }
-public function fetchCaptures($albumId)
+public function fetchCaptures(Request $request, $albumId, $userId, $hash)
 {
-    $captures = Capture::where('album_id', $albumId)
-        ->orderBy('date_add', 'desc')
-        ->get(['id', 'filename']);
+    $expectedHash = substr(hash('sha256', env('HASH_SECRET') . $albumId . $userId), 0, 16);
+    if ($hash !== $expectedHash) {
+        abort(403);
+    }
+
+    $latestFilename = $request->query('after');
+
+    $query = Capture::where('album_id', $albumId)->orderBy('date_add', 'desc');
+
+    if ($latestFilename) {
+        $latestCapture = Capture::where('filename', $latestFilename)->first();
+        if ($latestCapture) {
+            $query->where('date_add', '>', $latestCapture->date_add);
+        }
+    }
+    $captures = $query->get();
+
+    if ($request->ajax()) {
+        return view('partials._captures', ['captures' => $captures]);
+    }
 
     return response()->json($captures);
 }
+
 
 
 }
