@@ -13,6 +13,7 @@ use App\Models\Invitation;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Flasher\Laravel\Facade\Flasher;
 use App\Mail\SecureAlbumLink;
+use App\Mail\AlbumInvite;
 use Illuminate\Support\Facades\Log;
 
 
@@ -64,22 +65,35 @@ class PhotographerController extends Controller
         ]);
 
         $album = Album::findOrFail($request->album_id);
+
         $newUser = User::create([
             'album_id' => $album->id,
             'email' => $request->friend_email,
             'name' => null,
-            'log' => ''
+            'log' => 'User created for invite a friend'
+
         ]);
 
         $secureUrl = route('album.view', [
-            'albumId' => $album->id,
-            'userId' => $newUser->id,
+            'album' => $album->id,
+            'user' => $newUser->id,
             'hash' => hash('sha256', "SALT123{$album->id}{$newUser->id}")
         ]);
 
-        Mail::to($request->friend_email)->send(new \App\Mail\AlbumInvite($secureUrl));
+       try {
+        Log::info("Inviting friend via email: " . $request->friend_email);
+        Log::info("Generated secured url: " . $secureUrl);
+        Mail::to($request->friend_email)->send(new AlbumInvite($secureUrl));
+        return response()->json(['success' => true], 200);
+       } catch (\Exception $e) {
+        Log::error("Invite failed to send: " . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Server error: unable to send invitation email.'
+        ], 500);
+       }
 
-        return response()->json(['success' => true, 'message' => 'Invitation sent']);
+
     }
 
     public function generateQr(Request $request)
@@ -99,7 +113,7 @@ class PhotographerController extends Controller
                 'album_id' => $album->id,
                 'email' => null,
                 'name' => null,
-                'log' => '',
+                'log' => 'Created user from QR invite',
                 'date_add' => now(),
             ]);
         }
@@ -138,7 +152,7 @@ class PhotographerController extends Controller
             $zip = new \ZipArchive;
             if ($zip->open($zipFile, \ZipArchive::CREATE) === true) {
                 foreach ($album->captures as $capture) {
-                    $photoPath = storage_path("app/public/photos/{$capture->filename}");
+                    $photoPath = storage_path("app/public/images/{$capture->filename}");
                     if (file_exists($photoPath)) {
                         $zip->addFile($photoPath, basename($photoPath));
                     }

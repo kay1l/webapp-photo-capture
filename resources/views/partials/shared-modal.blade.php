@@ -137,13 +137,17 @@
                             const text = await res.text();
                             try {
                                 const data = JSON.parse(
-                                text);
+                                    text);
 
                                 if (res.ok && data.success) {
                                     modal.style.display = 'none';
-                                    toastr.success( `You’ll receive your album link at ${email} after your visit.`);
+                                    toastr.success(
+                                        `You’ll receive your album link at ${email} after your visit.`
+                                        );
                                 } else {
-                                    toastr.error(data.message || "Something went wrong. Please try again.");
+                                    toastr.error(data.message ||
+                                        "Something went wrong. Please try again."
+                                        );
                                 }
                             } catch (err) {
                                 console.error("Invalid JSON response:", text);
@@ -195,26 +199,63 @@
 
         document.getElementById('invite-friend-email')?.addEventListener('click', e => {
             e.preventDefault();
+
             openModal(`
-            <h3><i class="fa fa-user-plus mr-2"></i> Invite a friend by Email</h3>
-            <p>Enter your friend’s email to invite them to access this album.</p>
-            <input type="email" id="friend-email" placeholder="friend@example.com" style="width:100%; padding:10px;" />
-            <button id="submit-invite" style="margin-top:10px;">Send Invitation</button>
-        `);
+        <h3><i class="fa fa-user-plus mr-2"></i> Invite a friend by Email</h3>
+        <p>Enter your friend’s email to invite them to access this album.</p>
+        <input type="email" id="friend-email" placeholder="friend@example.com" style="width:100%; padding:10px;" />
+        <button id="submit-invite" style="margin-top:10px;">Send Invitation</button>
+    `);
+
             setTimeout(() => {
-                document.getElementById('submit-invite').addEventListener('click',
-                    () => {
-                        const email = document.getElementById('friend-email')
-                            .value.trim();
-                        if (email) {
-                            alert(`Invitation sent to ${email}`);
-                            modal.style.display = 'none';
-                        } else {
-                            alert("Please enter a valid email.");
-                        }
-                    });
+                document.getElementById('submit-invite').addEventListener('click', () => {
+                    const email = document.getElementById('friend-email').value.trim();
+                    const albumId = document.body.dataset.albumId;
+
+                    if (!email) {
+                        toastr.error("Please enter a valid email.");
+                        return;
+                    }
+
+                    fetch('/photographer/invite-email', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector(
+                                    'meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                album_id: albumId,
+                                friend_email: email
+                            })
+                        })
+                        .then(async (res) => {
+                            const text = await res.text();
+                            try {
+                                const data = JSON.parse(text);
+
+                                if (res.ok && data.success) {
+                                    modal.style.display = 'none';
+                                    toastr.success(
+                                        `Invitation sent to ${email}`);
+                                } else {
+                                    toastr.error(data.message ||
+                                        "Something went wrong. Please try again."
+                                        );
+                                }
+                            } catch (err) {
+                                console.error("Invalid JSON response:", text);
+                                toastr.error("Unexpected server response.");
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Fetch failed:", err);
+                            toastr.error("Server error. Please try again later.");
+                        });
+                });
             }, 0);
         });
+
 
         const imgModal = document.getElementById('image-preview-modal');
         const imgPreview = document.getElementById('preview-image');
