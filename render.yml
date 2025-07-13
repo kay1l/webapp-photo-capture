@@ -12,7 +12,7 @@ services:
       - key: APP_KEY
         value: base64:enZLdQt0w5JG//JiwYyFoDiEaIcCQc0SPHWebOl8Mos=
       - key: APP_DEBUG
-        value: false
+        value: true
       - key: APP_URL
         sync: false
 
