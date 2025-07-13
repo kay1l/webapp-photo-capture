@@ -73,11 +73,11 @@ class PhotographerController extends Controller
             'log' => 'User created for invite a friend'
 
         ]);
-
+        $hash = $this->generateAlbumHash($album->id, $newUser->id);
         $secureUrl = route('album.view', [
             'album' => $album->id,
             'user' => $newUser->id,
-            'hash' => hash('sha256', "SALT123{$album->id}{$newUser->id}")
+            'hash' => $hash
         ]);
 
        try {
