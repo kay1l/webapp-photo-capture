@@ -110,46 +110,5 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Full image preview on click
-    document.querySelectorAll(".image-preview-link a").forEach((link) => {
-        link.addEventListener("click", (e) => {
-            e.preventDefault();
-            const img = link.querySelector("img");
-            const fullSrc = img.dataset.fullSrc;
 
-            const modal = document.createElement("div");
-            modal.style.position = "fixed";
-            modal.style.top = 0;
-            modal.style.left = 0;
-            modal.style.width = "100%";
-            modal.style.height = "100%";
-            modal.style.backgroundColor = "rgba(0,0,0,0.8)";
-            modal.style.display = "flex";
-            modal.style.flexDirection = "column";
-            modal.style.alignItems = "center";
-            modal.style.justifyContent = "center";
-            modal.style.zIndex = 9999;
-
-            const fullImg = document.createElement("img");
-            fullImg.src = fullSrc;
-            fullImg.style.maxWidth = "90%";
-            fullImg.style.maxHeight = "80vh";
-            fullImg.style.marginBottom = "10px";
-
-            const instruction = document.createElement("p");
-            instruction.textContent =
-                'Long press the image then tap "Save to Camera Roll"';
-            instruction.style.color = "white";
-            instruction.style.fontSize = "1rem";
-
-            modal.appendChild(fullImg);
-            modal.appendChild(instruction);
-
-            modal.addEventListener("click", () => {
-                document.body.removeChild(modal);
-            });
-
-            document.body.appendChild(modal);
-        });
-    });
 });
