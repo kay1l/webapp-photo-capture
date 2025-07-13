@@ -25,8 +25,15 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Expose port 80
-EXPOSE 80
-
 # Use custom Apache virtual host configuration
 COPY .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+
+# Copy startup script and set permissions
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+# Expose port
+EXPOSE 80
+
+# Set container startup command
+CMD ["/start.sh"]
