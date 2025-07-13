@@ -7,22 +7,43 @@ use App\Models\Album;
 use App\Models\Capture;
 use App\Models\User;
 
-Route::get('/', function () {
-    $album = Album::has('captures')->latest()->firstOrFail();
-    $captures = Capture::where('album_id', $album->id)
-        ->orderBy('date_add', 'desc')
-        ->get();
-    $user = User::firstOrFail();
-    $hash = substr(hash('sha256', env('HASH_SECRET') . $album->id . $user->id), 0, 16);
+// Route::get('/', function () {
+//     $album = Album::has('captures')->latest()->firstOrFail();
+//     $captures = Capture::where('album_id', $album->id)
+//         ->orderBy('date_add', 'desc')
+//         ->get();
+//     $user = User::firstOrFail();
+//     $hash = substr(hash('sha256', env('HASH_SECRET') . $album->id . $user->id), 0, 16);
 
-    return view('album', [
-        'album' => $album,
-        'user' => $user,
-        'hash' => $hash,
-        'captures' => $captures,
-        'accessType' => $album->status === 'longterm' ? 'longterm' : 'live',
-    ]);
-})->name('home');
+//     return view('album', [
+//         'album' => $album,
+//         'user' => $user,
+//         'hash' => $hash,
+//         'captures' => $captures,
+//         'accessType' => $album->status === 'longterm' ? 'longterm' : 'live',
+//     ]);
+// })->name('home');
+
+Route::get('/', function () {
+    try {
+        $album = \App\Models\Album::has('captures')->latest()->firstOrFail();
+        $user = \App\Models\User::firstOrFail();
+
+        return [
+            'APP_KEY' => env('APP_KEY'),
+            'HASH_SECRET' => env('HASH_SECRET'),
+            'Album ID' => $album->id,
+            'User ID' => $user->id,
+            'View exists?' => view()->exists('album'),
+        ];
+    } catch (\Throwable $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTrace()[0] ?? 'no trace',
+        ], 500);
+    }
+});
+
 
 // Album view route with hash protection
 Route::middleware('validate.token')->group(function () {
