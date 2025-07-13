@@ -3,8 +3,12 @@ services:
     name: photographer-app
     env: php
     plan: free
-    buildCommand: "composer install --no-dev && php artisan migrate --force"
-    startCommand: "php artisan serve --host=0.0.0.0 --port=10000"
+    buildCommand: |
+      composer install --no-dev
+      php artisan key:generate
+      php artisan migrate --force
+      php artisan db:seed --force
+    startCommand: php artisan serve --host=0.0.0.0 --port=10000
     envVars:
       - key: APP_ENV
         value: production
