@@ -2,7 +2,7 @@
     <html lang="en">
 
     <head>
-        <title>Aside - Free HTML5 Bootstrap 4 Template by uicookies.com</title>
+        <title>MuseumCam - Capture Your Visit</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="Free HTML5 Website Template by uicookies.com">
