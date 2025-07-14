@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Capture;
+use App\Models\User;
 use App\Models\Album;
 class AlbumController extends Controller
 {
@@ -11,18 +12,23 @@ class AlbumController extends Controller
 public function show($albumId, $userId, $hash)
 {
 
-
+    $hash = substr(hash('sha256', env('HASH_SECRET') . $albumId . $userId), 0, 16);
     $album = Album::findOrFail($albumId);
+    $user = User::findOrFail($userId);
 
     $accessType = $album->status === 'longterm' ? 'longterm' : 'live';
     $captures = Capture::where('album_id', $album->id)
         ->orderBy('date_add', 'desc')
         ->get();
 
+
     return view('album', [
         'album' => $album,
+        'user' => $user,
         'captures' => $captures,
+        'hash' => $hash,
         'accessType' => $accessType
+
     ]);
 }
 public function fetchCaptures(Request $request, $albumId, $userId, $hash)

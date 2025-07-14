@@ -61,6 +61,27 @@
         top: 5px;
         right: 10px;
     }
+
+    .spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #fff;
+        border-top: 2px solid #555;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+        vertical-align: middle;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
 
 <div id="sidebar-modal" class="modal" style="display: none;">
@@ -79,6 +100,17 @@
 </div>
 
 <script>
+    function setButtonLoading(button, isLoading, loadingText = "Submitting...") {
+        if (isLoading) {
+            button.disabled = true;
+            button.dataset.originalText = button.innerHTML;
+            button.innerHTML = `<span class="spinner" style="margin-right: 8px;"></span>${loadingText}`;
+        } else {
+            button.disabled = false;
+            button.innerHTML = button.dataset.originalText;
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         const modal = document.getElementById('sidebar-modal');
         const modalBody = document.getElementById('modal-body');
@@ -108,13 +140,16 @@
         <h3><i class="fa fa-envelope mr-2"></i> Receive all my pictures</h3>
         <p>Enter your email to receive your album link after your visit.</p>
         <input type="email" id="email-input" placeholder="you@example.com" style="width:100%; padding:10px;" />
-        <button id="submit-email" style="margin-top:10px;">Submit</button>
+        <button id="submit-email" style="margin-top:10px; background-color:#1FAD9F; color:white; padding:10px 20px; border:none; border-radius:4px;">Submit</button>
     `);
 
             setTimeout(() => {
                 document.getElementById('submit-email').addEventListener('click', () => {
+
                     const email = document.getElementById('email-input').value.trim();
                     const albumId = document.body.dataset.albumId;
+                    const button = document.getElementById('submit-email');
+                    setButtonLoading(button, true);
 
                     if (!email) {
                         toastr.error("Please enter a valid email.");
@@ -143,11 +178,11 @@
                                     modal.style.display = 'none';
                                     toastr.success(
                                         `You’ll receive your album link at ${email} after your visit.`
-                                        );
+                                    );
                                 } else {
                                     toastr.error(data.message ||
                                         "Something went wrong. Please try again."
-                                        );
+                                    );
                                 }
                             } catch (err) {
                                 console.error("Invalid JSON response:", text);
@@ -204,13 +239,15 @@
         <h3><i class="fa fa-user-plus mr-2"></i> Invite a friend by Email</h3>
         <p>Enter your friend’s email to invite them to access this album.</p>
         <input type="email" id="friend-email" placeholder="friend@example.com" style="width:100%; padding:10px;" />
-        <button id="submit-invite" style="margin-top:10px;">Send Invitation</button>
+        <button id="submit-invite" style="margin-top:10px; background-color:#1FAD9F; color:white; padding:10px 20px; border:none; border-radius:4px;">Send Invitation</button>
     `);
 
             setTimeout(() => {
                 document.getElementById('submit-invite').addEventListener('click', () => {
                     const email = document.getElementById('friend-email').value.trim();
                     const albumId = document.body.dataset.albumId;
+                    const button = document.getElementById('submit-invite');
+                    setButtonLoading(button, true);
 
                     if (!email) {
                         toastr.error("Please enter a valid email.");
@@ -241,7 +278,7 @@
                                 } else {
                                     toastr.error(data.message ||
                                         "Something went wrong. Please try again."
-                                        );
+                                    );
                                 }
                             } catch (err) {
                                 console.error("Invalid JSON response:", text);
