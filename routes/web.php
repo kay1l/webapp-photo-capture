@@ -6,6 +6,7 @@ use App\Http\Controllers\PhotographerController;
 use App\Models\Album;
 use App\Models\Capture;
 use App\Models\User;
+use App\Models\Remote;
 
 Route::get('/', function () {
     $album = Album::has('captures')->latest()->firstOrFail();
@@ -24,30 +25,9 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-// Route::get('/', function () {
-//     try {
-//         $album = \App\Models\Album::has('captures')->latest()->firstOrFail();
-//         $user = \App\Models\User::firstOrFail();
-
-//         return [
-//             'APP_KEY' => env('APP_KEY'),
-//             'HASH_SECRET' => env('HASH_SECRET'),
-//             'Album ID' => $album->id,
-//             'User ID' => $user->id,
-//             'View exists?' => view()->exists('album'),
-//         ];
-//     } catch (\Throwable $e) {
-//         return response()->json([
-//             'error' => $e->getMessage(),
-//             'trace' => $e->getTrace()[0] ?? 'no trace',
-//         ], 500);
-//     }
-// });
-
-
 // Album view route with hash protection
 Route::middleware('validate.token')->group(function () {
-    Route::get('/album/{album}/{user}/{hash}', [AlbumController::class, 'show'])->name('album.view');
+    Route::get('/album/{album}/user/{user}/{hash}', [AlbumController::class, 'show'])->name('album.view');
     Route::get('/album/{album}/{user}/{hash}/captures', [AlbumController::class, 'fetchCaptures']) ->name('album.captures');
 
 
@@ -61,4 +41,29 @@ Route::prefix('photographer')->name('photographer.')->group(function () {
     Route::get('/download/{albumId}', [PhotographerController::class, 'downloadZip'])->name('download');
     Route::get('/remote/{device}/{hash}', [PhotographerController::class, 'startSession'])->name('photographer.start');
 
+
+
+});
+Route::get('/generate-start-url/{deviceId}', function ($deviceId) {
+
+
+    $venueId = 1;
+    $album = Album::create([
+        'remote_id' => $deviceId,
+        'status' => 'live',
+        'date_add' => now(),
+        'date_upd' => now(),
+        'venue_id' => $venueId,
+    ]);
+    $user = User::create([
+        'album_id' => $album->id,
+        'name' => 'New User',
+        'date_add' => now(),
+    ]);
+    $hash = substr(hash('sha256', env('HASH_SECRET') . $album->id . $user->id), 0, 16);
+    return redirect()->route('album.view', [
+        'album' => $album->id,
+        'user' => $user->id,
+        'hash' => $hash,
+    ]);
 });

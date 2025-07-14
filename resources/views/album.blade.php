@@ -32,11 +32,10 @@
                 </a>
             </div>
         @empty
-            <div class="card text-center">
-                <div class="card-body">
-                    <p>No photos captured yet.</p>
-                </div>
-            </div>
+        <div class="d-flex justify-content-center align-items-center" style="height: 60vh;">
+            <p class="text-center mb-0">No photos captured yet.</p>
+        </div>
+
         @endforelse
     </div>
 

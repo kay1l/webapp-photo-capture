@@ -15,6 +15,7 @@ use Flasher\Laravel\Facade\Flasher;
 use App\Mail\SecureAlbumLink;
 use App\Mail\AlbumInvite;
 use Illuminate\Support\Facades\Log;
+use App\Models\Remote;
 
 
 class PhotographerController extends Controller
