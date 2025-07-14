@@ -1,5 +1,5 @@
 
-<aside class="probootstrap-aside js-probootstrap-aside active ">
+<aside class="probootstrap-aside js-probootstrap-aside ">
     <a href="#" class="probootstrap-close-menu js-probootstrap-close-menu d-md-none">
         Close
         <i class="fa fa-arrow-right"></i>

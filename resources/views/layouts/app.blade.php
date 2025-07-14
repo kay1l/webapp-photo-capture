@@ -32,13 +32,6 @@
       data-hash="{{ $hash }}">
 
     @include('partials.sidebar')
-
-    {{-- @if (session('success'))
-        <div class="alert alert-success text-center" style="margin: 10px auto; width: 80%;">
-            {{ session('success') }}
-        </div>
-    @endif --}}
-
     @yield('content')
     @include('partials.shared-modal')
 
