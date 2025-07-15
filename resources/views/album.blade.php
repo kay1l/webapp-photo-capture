@@ -57,5 +57,4 @@
             </div>
         </div>
     </main>
-    <script src="/assets/js/refresh.js></script>
 @endsection
