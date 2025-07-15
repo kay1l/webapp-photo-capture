@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'validate.token' => \App\Http\Middleware\ValidateUserAccessToken::class,
+            'restore.session' => \App\Http\Middleware\RestoreSessionFromCookie::class,
         ]);
         $middleware->trustProxies(
             at: '*',

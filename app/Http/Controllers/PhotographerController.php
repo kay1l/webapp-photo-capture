@@ -105,11 +105,6 @@ class PhotographerController extends Controller
 
         $album = Album::findOrFail($request->album_id);
 
-        $existingUser =  User::where('album_id', $album->id)->orderBy('date_add', 'desc')->first();
-
-        if($existingUser){
-            $user = $existingUser;
-        }else {
             $user = User::create([
                 'album_id' => $album->id,
                 'email' => null,
@@ -117,8 +112,6 @@ class PhotographerController extends Controller
                 'log' => 'Created user from QR invite',
                 'date_add' => now(),
             ]);
-        }
-
 
         $hash = $this->generateAlbumHash($album->id, $user->id);
 
