@@ -105,10 +105,19 @@ class PhotographerController extends Controller
 
         $album = Album::findOrFail($request->album_id);
 
+        $path = resource_path('data/names.json');
+        $names = json_decode(file_get_contents($path), true);
+
+        if (empty($names)) {
+            abort(500, 'No names found in JSON.');
+        }
+
+        $randomName = $names[array_rand($names)];
+
             $user = User::create([
                 'album_id' => $album->id,
                 'email' => null,
-                'name' => null,
+                'name' => $randomName,
                 'log' => 'Created user from QR invite',
                 'date_add' => now(),
             ]);

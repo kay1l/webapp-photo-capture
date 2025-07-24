@@ -21,7 +21,6 @@ class PhotographerRemoteController extends Controller
             'venue_id' => $venueId,
         ]);
 
-        // Load names from JSON file in resources/data/names.json
         $path = resource_path('data/names.json');
         $names = json_decode(file_get_contents($path), true);
 
