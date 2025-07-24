@@ -12,6 +12,7 @@ class PhotographerRemoteController extends Controller
     {
         $venueId = 1;
 
+        // Create album record
         $album = Album::create([
             'remote_id' => $deviceId,
             'status' => 'live',
@@ -20,14 +21,28 @@ class PhotographerRemoteController extends Controller
             'venue_id' => $venueId,
         ]);
 
+        // Load names from JSON file in resources/data/names.json
+        $path = resource_path('data/names.json');
+        $names = json_decode(file_get_contents($path), true);
+
+        if (empty($names)) {
+            abort(500, 'No names found in JSON.');
+        }
+
+        $randomName = $names[array_rand($names)];
+
+
+        $sanitizedEmail = strtolower(str_replace(' ', '.', $randomName)) . rand(1000, 9999) . '@gmail.com';
+
         $user = User::create([
             'album_id' => $album->id,
-            'name' => 'New User',
-            'email' => 'testing@gmail.com',
+            'name' => $randomName,
+            'email' => $sanitizedEmail,
             'date_add' => now(),
         ]);
 
         $hash = substr(hash('sha256', env('HASH_SECRET') . $album->id . $user->id), 0, 16);
+
 
         $cookie = cookie('user_access_token', $hash, 43200);
 
