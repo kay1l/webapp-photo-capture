@@ -73,3 +73,9 @@ Route::middleware('restore.session')->get('/photographer/remote/{deviceId}', fun
         'hash' => $hash,
     ])->withCookie($cookie);
 });
+
+
+Route::get('/debug-error', function () {
+    Log::error("👀 Reached debug route — Render logs should now show this.");
+    abort(500, 'This is a test error.');
+});

@@ -17,9 +17,9 @@ services:
         value: https://webapp-photo-capture-g6hd.onrender.com
 
       - key: LOG_CHANNEL
-        value: stack
+        value: stderr
       - key: LOG_LEVEL
-        value: info
+        value: debug
 
       - key: DB_CONNECTION
         value: pgsql
