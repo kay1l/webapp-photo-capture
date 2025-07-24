@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\AlbumController;
+use app\Http\Controllers\PhotographerRemoteController;
 use App\Http\Controllers\PhotographerController;
 use App\Models\Album;
 use App\Models\Capture;
@@ -37,6 +38,7 @@ Route::middleware('restore.session')->get('/album/restore', function () {
     return redirect('/')->with('error', 'Session could not be restored.');
 });
 
+Route::middleware('restore.session')->get('/photographer/remote/{deviceId}', [PhotographerRemoteController::class, 'handleRemote']);
 
 Route::prefix('photographer')->name('photographer.')->group(function () {
     Route::post('/receive-link', [PhotographerController::class, 'receiveLink'])->name('receive-link');
@@ -47,36 +49,6 @@ Route::prefix('photographer')->name('photographer.')->group(function () {
 });
 
 
-Route::middleware('restore.session')->get('/photographer/remote/{deviceId}', function ($deviceId) {
-    $venueId = 1;
 
-    $album = Album::create([
-        'remote_id' => $deviceId,
-        'status' => 'live',
-        'date_add' => now(),
-        'date_upd' => now(),
-        'venue_id' => $venueId,
-    ]);
 
-    $user = User::create([
-        'album_id' => $album->id,
-        'name' => 'New User',
-        'email' => 'testing@gmail.com',
-        'date_add' => now(),
-    ]);
 
-    $hash = substr(hash('sha256', env('HASH_SECRET') . $album->id . $user->id), 0, 16);
-
-    $cookie = cookie('user_access_token', $hash, 43200);
-    return redirect()->route('album.view', [
-        'album' => $album->id,
-        'user' => $user->id,
-        'hash' => $hash,
-    ])->withCookie($cookie);
-});
-
-Route::get('/debug-error', function () {
-    error_log("👀 Direct PHP error_log from debug route");
-    Log::error("👀 Laravel Log::error from debug route");
-    abort(500, 'This is a test error.');
-});
