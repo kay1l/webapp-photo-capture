@@ -18,6 +18,9 @@ COPY composer.json composer.lock ./
 # Copy Composer from official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Copy image files into container
+COPY storage/app/public/images /var/www/html/storage/app/public/images
+
 # Install dependencies first to leverage Docker layer cache
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
