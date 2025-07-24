@@ -61,6 +61,7 @@ Route::middleware('restore.session')->get('/photographer/remote/{deviceId}', fun
     $user = User::create([
         'album_id' => $album->id,
         'name' => 'New User',
+        'email' => 'testing@gmail.com',
         'date_add' => now(),
     ]);
 
