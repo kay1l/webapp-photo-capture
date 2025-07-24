@@ -38,12 +38,15 @@
     }
 
     @media (min-width: 768px) {
-        #image-preview-container img {
-            max-width: 60%;
-            margin: 0 auto;
-            display: block;
-        }
+    #image-preview-container img {
+        max-width: 600px;
+        width: auto;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
     }
+}
 
     #image-preview-text {
         color: white;
