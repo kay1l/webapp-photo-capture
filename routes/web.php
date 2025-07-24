@@ -3,7 +3,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\AlbumController;
-use app\Http\Controllers\PhotographerRemoteController;
+use App\Http\Controllers\PhotographerRemoteController;
 use App\Http\Controllers\PhotographerController;
 use App\Models\Album;
 use App\Models\Capture;
