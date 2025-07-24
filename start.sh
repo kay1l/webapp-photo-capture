@@ -11,3 +11,6 @@ php artisan migrate --seed --force
 
 echo "🚀 Starting Apache..."
 apache2-foreground
+
+echo "🔗 Linking storage folder..."
+php artisan storage:link || echo "Storage link already exists."
