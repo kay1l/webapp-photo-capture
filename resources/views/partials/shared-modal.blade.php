@@ -1,4 +1,4 @@
-<style>
+{{-- <style>
     .modal {
         position: fixed;
         top: 0;
@@ -38,15 +38,15 @@
     }
 
     @media (min-width: 768px) {
-    #image-preview-container img {
-        max-width: 600px;
-        width: auto;
-        height: auto;
-        margin: 0 auto;
-        display: block;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        #image-preview-container img {
+            max-width: 600px;
+            width: auto;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
     }
-}
 
     #image-preview-text {
         color: white;
@@ -85,7 +85,105 @@
             transform: rotate(360deg);
         }
     }
+</style> --}}
+
+
+<style>
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background: #fff;
+        border-radius: 8px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
+        position: relative;
+        text-align: center;
+    }
+
+    .close-button {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    /* General image style for modal */
+    #image-preview-container img {
+        width: 100%;
+        max-width: 90vw;
+        max-height: 80vh;
+        height: auto;
+        border-radius: 10px;
+        object-fit: contain;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        margin: 0 auto;
+        display: block;
+    }
+
+    /* Desktop: limit to 600px width */
+    @media (min-width: 992px) {
+        #image-preview-container img {
+            max-width: 600px;
+        }
+    }
+
+    #image-preview-text {
+        color: white;
+        margin-top: 1rem;
+    }
+
+    #image-preview-modal .modal-content {
+        background: transparent;
+        padding: 0;
+        max-width: 95vw;
+        max-height: 95vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #image-preview-modal .close-button {
+        color: red;
+        top: 5px;
+        right: 10px;
+    }
+
+    .spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #fff;
+        border-top: 2px solid #555;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+        vertical-align: middle;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
+
 
 <div id="sidebar-modal" class="modal" style="display: none;">
     <div class="modal-content">
