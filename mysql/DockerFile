@@ -1,0 +1,7 @@
+# mysql/Dockerfile
+FROM mysql:8.0
+
+ENV MYSQL_ROOT_PASSWORD=testpassword
+ENV MYSQL_DATABASE=photographdb
+ENV MYSQL_USER=testuser
+ENV MYSQL_PASSWORD=password123

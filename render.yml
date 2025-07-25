@@ -1,3 +1,71 @@
+# services:
+#   - type: web
+#     name: photographer-app
+#     env: docker
+#     plan: free
+#     dockerfilePath: ./Dockerfile
+#     envVars:
+#       - key: APP_NAME
+#         value: PhotographerApp
+#       - key: APP_ENV
+#         value: production
+#       - key: APP_KEY
+#         value: base64:enZLdQt0w5JG//JiwYyFoDiEaIcCQc0SPHWebOl8Mos=
+#       - key: APP_DEBUG
+#         value: true
+#       - key: APP_URL
+#         value: https://webapp-photo-capture-g6hd.onrender.com
+
+#       - key: LOG_CHANNEL
+#         value: stderr
+#       - key: LOG_LEVEL
+#         value: debug
+
+#       - key: DB_CONNECTION
+#         value: pgsql
+#       - key: DB_HOST
+#         value: dpg-d20hp8nfte5s738uclsg-a.oregon-postgres.render.com
+#       - key: DB_PORT
+#         value: 5432
+#       - key: DB_DATABASE
+#         value: photographdb
+#       - key: DB_USERNAME
+#         value: photographdb_user
+#       - key: DB_PASSWORD
+#         value: whBSohOZoccanTwv5FljwgnPYuuo1uTV
+
+#       - key: SESSION_DRIVER
+#         value: database
+#       - key: SESSION_LIFETIME
+#         value: 120
+
+#       - key: QUEUE_CONNECTION
+#         value: database
+#       - key: CACHE_STORE
+#         value: database
+
+#       - key: MAIL_MAILER
+#         value: smtp
+#       - key: MAIL_HOST
+#         value: smtp.gmail.com
+#       - key: MAIL_PORT
+#         value: 587
+#       - key: MAIL_USERNAME
+#         value: gomezkyle3102@gmail.com
+#       - key: MAIL_PASSWORD
+#         value: nningjrzfcfmgnmg
+#       - key: MAIL_ENCRYPTION
+#         value: tls
+#       - key: MAIL_FROM_ADDRESS
+#         value: gomezkyle3102@gmail.com
+#       - key: MAIL_FROM_NAME
+#         value: "PhotographerApp"
+
+#       - key: HASH_SECRET
+#         value: XxUdCwmw9kx300Hpsrsse3DywB6uQI0K
+
+
+
 services:
   - type: web
     name: photographer-app
@@ -22,17 +90,17 @@ services:
         value: debug
 
       - key: DB_CONNECTION
-        value: pgsql
+        value: mysql
       - key: DB_HOST
-        value: dpg-d20hp8nfte5s738uclsg-a.oregon-postgres.render.com
+        value: mysql
       - key: DB_PORT
-        value: 5432
+        value: 3306
       - key: DB_DATABASE
         value: photographdb
       - key: DB_USERNAME
-        value: photographdb_user
+        value: testuser
       - key: DB_PASSWORD
-        value: whBSohOZoccanTwv5FljwgnPYuuo1uTV
+        value: password123
 
       - key: SESSION_DRIVER
         value: database
@@ -63,3 +131,30 @@ services:
 
       - key: HASH_SECRET
         value: XxUdCwmw9kx300Hpsrsse3DywB6uQI0K
+
+  - type: web
+    name: mysql
+    env: docker
+    plan: free
+    dockerfilePath: ./mysql/Dockerfile
+    autoDeploy: false
+    healthCheckPath: /
+    ports:
+      - 3306
+
+  - type: web
+    name: phpmyadmin
+    env: docker
+    plan: free
+    dockerfilePath: ./phpmyadmin/Dockerfile
+    envVars:
+      - key: PMA_HOST
+        value: mysql
+      - key: PMA_PORT
+        value: "3306"
+      - key: PMA_USER
+        value: testuser
+      - key: PMA_PASSWORD
+        value: password123
+      - key: PMA_ARBITRARY
+        value: "1"
