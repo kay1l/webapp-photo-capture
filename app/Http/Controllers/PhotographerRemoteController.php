@@ -8,8 +8,21 @@ use App\Models\User;
 
 class PhotographerRemoteController extends Controller
 {
-    public function handleRemote($deviceId)
+    public function handleRemote($deviceId, $token)
     {
+
+        $expected_token = substr(hash('sha256', env('HASH_SECRET') . $deviceId), 0, 16);
+
+        if($token !== $expected_token) {
+            abort(403, 'Invalid Token');
+        }
+
+        $existing = Album::where('remote_id', $deviceId)->where('status' , "live")->first();
+
+        if($existing){
+            abort(403, 'This device is already in use.');
+        }
+
         $venueId = 1;
 
         // Create album record

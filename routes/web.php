@@ -38,7 +38,7 @@ Route::middleware('restore.session')->get('/album/restore', function () {
     return redirect('/')->with('error', 'Session could not be restored.');
 });
 
-Route::middleware('restore.session')->get('/photographer/remote/{deviceId}', [PhotographerRemoteController::class, 'handleRemote']);
+Route::middleware('restore.session')->get('/photographer/remote/{deviceId}/{token}', [PhotographerRemoteController::class, 'handleRemote']);
 
 Route::prefix('photographer')->name('photographer.')->group(function () {
     Route::post('/receive-link', [PhotographerController::class, 'receiveLink'])->name('receive-link');
