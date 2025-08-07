@@ -10,13 +10,13 @@ class PhotographerRemoteController extends Controller
 {
     public function handleRemote($deviceId, $token)
     {
-
-        $expected_token = substr(hash('sha256', env('HASH_SECRET') . $deviceId), 0, 16);
+        $secret = "38r34kde3fh7g43d";
+        
+        $expected_token = substr(hash('sha256', $secret  . $deviceId), 0, 16);
 
         if($token !== $expected_token) {
             abort(403, 'Invalid Token');
         }
-
         $existing = Album::where('remote_id', $deviceId)->where('status' , "live")->first();
 
         if($existing){
