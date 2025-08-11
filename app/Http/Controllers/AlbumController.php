@@ -27,8 +27,8 @@ public function show($albumId, $userId, $hash)
         'user' => $user,
         'captures' => $captures,
         'hash' => $hash,
-        'accessType' => $accessType
-
+        'accessType' => $accessType,
+        'showEmailModal' => session('showEmailModal', false)
     ]);
 }
 public function fetchCaptures(Request $request, $albumId, $userId, $hash)

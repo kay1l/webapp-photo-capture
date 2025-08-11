@@ -11,7 +11,6 @@ class PhotographerRemoteController extends Controller
     public function handleRemote($deviceId, $token)
     {
         $secret = "38r34kde3fh7g43d";
-        
         $expected_token = substr(hash('sha256', $secret  . $deviceId), 0, 16);
 
         if($token !== $expected_token) {
@@ -62,6 +61,7 @@ class PhotographerRemoteController extends Controller
             'album' => $album->id,
             'user' => $user->id,
             'hash' => $hash,
-        ])->withCookie($cookie);
+        ])->withCookie($cookie)
+        ->with('showEmailModal' , true);
     }
 }
