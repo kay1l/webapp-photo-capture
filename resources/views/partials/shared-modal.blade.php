@@ -236,67 +236,70 @@
 
         document.getElementById('receive-pictures')?.addEventListener('click', e => {
             e.preventDefault();
-            @if(session('showEmailModal'))
-            openModal(`
+
+                openModal(`
         <h3><i class="fa fa-envelope mr-2"></i> Receive all my pictures</h3>
         <p>Enter your email to receive your album link after your visit.</p>
         <input type="email" id="email-input" placeholder="you@example.com" style="width:100%; padding:10px;" />
         <button id="submit-email" style="margin-top:10px; background-color:#1FAD9F; color:white; padding:10px 20px; border:none; border-radius:4px;">Submit</button>
     `);
 
-            setTimeout(() => {
-                document.getElementById('submit-email').addEventListener('click', () => {
+                setTimeout(() => {
+                    document.getElementById('submit-email').addEventListener('click', () => {
 
-                    const email = document.getElementById('email-input').value.trim();
-                    const albumId = document.body.dataset.albumId;
-                    const button = document.getElementById('submit-email');
-                    setButtonLoading(button, true);
+                        const email = document.getElementById('email-input').value
+                        .trim();
+                        const albumId = document.body.dataset.albumId;
+                        const button = document.getElementById('submit-email');
+                        setButtonLoading(button, true);
 
-                    if (!email) {
-                        toastr.error("Please enter a valid email.");
-                        return;
-                    }
+                        if (!email) {
+                            toastr.error("Please enter a valid email.");
+                            return;
+                        }
 
-                    fetch('/photographer/receive-link', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector(
-                                    'meta[name="csrf-token"]').content
-                            },
-                            body: JSON.stringify({
-                                album_id: albumId,
-                                email
+                        fetch('/photographer/receive-link', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector(
+                                        'meta[name="csrf-token"]').content
+                                },
+                                body: JSON.stringify({
+                                    album_id: albumId,
+                                    email
+                                })
                             })
-                        })
-                        .then(async (res) => {
-                            const text = await res.text();
-                            try {
-                                const data = JSON.parse(
-                                    text);
+                            .then(async (res) => {
+                                const text = await res.text();
+                                try {
+                                    const data = JSON.parse(
+                                        text);
 
-                                if (res.ok && data.success) {
-                                    modal.style.display = 'none';
-                                    toastr.success(
-                                        `You’ll receive your album link at ${email} after your visit.`
-                                    );
-                                } else {
-                                    toastr.error(data.message ||
-                                        "Something went wrong. Please try again."
-                                    );
+                                    if (res.ok && data.success) {
+                                        modal.style.display = 'none';
+                                        toastr.success(
+                                            `You’ll receive your album link at ${email} after your visit.`
+                                        );
+                                    } else {
+                                        toastr.error(data.message ||
+                                            "Something went wrong. Please try again."
+                                        );
+                                    }
+                                } catch (err) {
+                                    console.error("Invalid JSON response:",
+                                        text);
+                                    toastr.error("Unexpected server response.");
                                 }
-                            } catch (err) {
-                                console.error("Invalid JSON response:", text);
-                                toastr.error("Unexpected server response.");
-                            }
-                        })
-                        .catch(err => {
-                            console.error("Fetch failed:", err);
-                            toastr.error("Server error. Please try again later.");
-                        });
-                });
-            }, 0);
-            @endif
+                            })
+                            .catch(err => {
+                                console.error("Fetch failed:", err);
+                                toastr.error(
+                                    "Server error. Please try again later.");
+                            });
+                    });
+                }, 0);
+
         });
 
 

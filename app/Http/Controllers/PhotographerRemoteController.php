@@ -61,7 +61,7 @@ class PhotographerRemoteController extends Controller
             'album' => $album->id,
             'user' => $user->id,
             'hash' => $hash,
-        ])->withCookie($cookie)
-        ->with('showEmailModal' , true);
+        ])->withCookie($cookie);
+
     }
 }

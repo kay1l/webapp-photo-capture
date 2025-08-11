@@ -21,6 +21,7 @@ public function show($albumId, $userId, $hash)
         ->orderBy('date_add', 'desc')
         ->get();
 
+       
 
     return view('album', [
         'album' => $album,
@@ -28,7 +29,7 @@ public function show($albumId, $userId, $hash)
         'captures' => $captures,
         'hash' => $hash,
         'accessType' => $accessType,
-        'showEmailModal' => session('showEmailModal', false)
+
     ]);
 }
 public function fetchCaptures(Request $request, $albumId, $userId, $hash)
@@ -60,3 +61,9 @@ public function fetchCaptures(Request $request, $albumId, $userId, $hash)
 
 
 }
+
+
+$secret = "38r34kde3fh7g43d";
+$deviceId = "4";
+$expected_token = substr(hash('sha256', $secret . $deviceId), 0, 16);
+$expected_token;
