@@ -236,7 +236,7 @@
 
         document.getElementById('receive-pictures')?.addEventListener('click', e => {
             e.preventDefault();
-            @if($showEmailModal)
+            @if(session('showEmailModal'))
             openModal(`
         <h3><i class="fa fa-envelope mr-2"></i> Receive all my pictures</h3>
         <p>Enter your email to receive your album link after your visit.</p>
