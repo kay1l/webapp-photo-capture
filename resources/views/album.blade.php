@@ -60,7 +60,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const shouldPromptEmail = @json($promptEmail);
+            const shouldPromptEmail = @json($promptEmail ?? false);
 
             if (shouldPromptEmail) {
                 const modal = document.getElementById('sidebar-modal');
