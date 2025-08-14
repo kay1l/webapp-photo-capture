@@ -22,7 +22,7 @@ class PhotographerController extends Controller
 {
     private function generateAlbumHash($albumId, $userId)
     {
-        return substr(hash('sha256', env('HASH_SECRET') . $albumId . $userId), 0, 16);
+        return substr(hash('sha256','SALT123' . $albumId . $userId), 0, 16);
     }
     public function receiveLink(Request $request)
     {
@@ -35,6 +35,9 @@ class PhotographerController extends Controller
 
         $user = User::where('album_id', $album->id)
             ->firstOrFail();
+
+        $user->email = $request->email;
+        $user->save();
 
         $token = Str::random(16);
         $hash = $this->generateAlbumHash($album->id, $user->id);
@@ -191,12 +194,24 @@ class PhotographerController extends Controller
         'status' => 'live'
     ]);
 
+    $path = resource_path('data/names.json');
+    $names = json_decode(file_get_contents($path), true);
+
+    if (empty($names)) {
+        abort(500, 'No names found in JSON.');
+    }
+
+    $randomName = $names[array_rand($names)];
+
+    // $sanitizedEmail = strtolower(str_replace(' ', '.', $randomName)) . rand(1000, 9999) . '@gmail.com';
+
     $user = User::create([
         'album_id' => $album->id,
-        'email' => request()->get('email', null),
-        'name' => null,
-        'log' => ''
+        'name' => $randomName,
+        // 'email' => $sanitizedEmail,
+        'date_add' => now(),
     ]);
+
 
     $secureHash = substr(hash('sha256', 'SALT123' . $album->id . $user->id), 0, 16);
 

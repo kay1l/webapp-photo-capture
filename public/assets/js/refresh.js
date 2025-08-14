@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (newCount > 0)
                     console.log(`Appended ${newCount} new photo(s).`);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             })
             .catch(console.error)
             .finally(() => {

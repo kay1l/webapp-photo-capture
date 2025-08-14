@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
     <main role="main" class="probootstrap-main js-probootstrap-main">
 
 
@@ -10,10 +9,11 @@
             <p>Loading new photos...</p>
         </div>
 
-        <button id="manual-refresh-btn" class="refresh-button btn btn-primary mb-3 ml-3" aria-label="Refresh">
-            <i class="fa fa-refresh mr-1"></i> Refresh
-        </button>
-
+        <div class="mb-6 ml-3" style="margin-bottom: 30px;">
+            <button id="manual-refresh-btn" class="refresh-button btn btn-primary" aria-label="Refresh">
+                <i class="fa fa-refresh mr-1"></i> Refresh
+            </button>
+        </div>
 
         <div class="probootstrap-bar">
             <a href="#" class="probootstrap-toggle js-probootstrap-toggle"><span class="fa fa-bars"></span></a>
@@ -22,12 +22,30 @@
             </div>
         </div>
 
+        <style>
+            #photo-container {
+                overflow: visible !important;
+                padding-top: 20px;
+            }
+
+            .card {
+                break-inside: avoid;
+
+            }
+
+            .card img {
+                width: 100%;
+                object-fit: contain;
+                height: auto;
+                display: block;
+            }
+        </style>
 
         <div class="card-columns" id="photo-container">
             @forelse($captures as $capture)
                 <div class="card img-loaded image-preview-link">
                     <a href="#">
-                        <img class="card-img-top probootstrap-animate fadeInUp probootstrap-animated"
+                        <img class="card-img-top probootstrap-animate fadeInUp probootstrap-animated img-fluid"
                             src="{{ asset('storage/images/' . $capture->filename) }}" alt="Photo"
                             data-full-src="{{ asset('storage/images/' . $capture->filename) }}">
                     </a>
@@ -38,23 +56,80 @@
                 </div>
             @endforelse
         </div>
-
-
-
-        <div class="container-fluid d-md-none">
-            <div class="row">
-                <div class="col-md-12">
-                    <ul class="list-unstyled d-flex probootstrap-aside-social">
-                        <li><a href="" class="p-2"><span class="fa fa-github"></span></a></li>
-                        <li><a href="#" class="p-2"><span class="fa fa-instagram"></span></a></li>
-                        <li><a href="#" class="p-2"><span class="fa fa-linkedin"></span></a></li>
-                    </ul>
-                    <p>© 2025 <a target="_blank">MuseumCam</a>. <br> All
-                        Rights
-                        Reserved.
-                    </p>
-                </div>
-            </div>
-        </div>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const shouldPromptEmail = @json($promptEmail);
+
+            if (shouldPromptEmail) {
+                const modal = document.getElementById('sidebar-modal');
+                const modalBody = document.getElementById('modal-body');
+
+                modalBody.innerHTML = `
+                    <h3><i class="fa fa-envelope mr-2"></i> Receive all my pictures</h3>
+                    <p>Enter your email to receive your album link after your visit.</p>
+                    <input type="email" id="email-input" placeholder="you@example.com" style="width:100%; padding:10px;" />
+                    <button id="submit-email" style="margin-top:10px; background-color:#1FAD9F; color:white; padding:10px 20px; border:none; border-radius:4px;">Submit</button>
+                `;
+                modal.style.display = 'flex';
+
+                setTimeout(() => {
+                    document.getElementById('submit-email')?.addEventListener('click', () => {
+                        const email = document.getElementById('email-input').value.trim();
+                        const albumId = document.body.dataset.albumId;
+                        const button = document.getElementById('submit-email');
+
+                        if (!email) {
+                            toastr.error("Please enter a valid email.");
+                            return;
+                        }
+
+                        button.disabled = true;
+                        button.innerHTML = `<span class="spinner" style="margin-right: 8px;"></span>Submitting...`;
+
+                        fetch('/photographer/receive-link', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                album_id: albumId,
+                                email
+                            })
+                        })
+                        .then(async (res) => {
+                            const text = await res.text();
+
+                            try {
+                                const data = JSON.parse(text);
+
+                                if (res.ok && data.success) {
+                                    modal.style.display = 'none';
+                                    toastr.success(data.message);
+                                } else {
+                                    toastr.error(data.message || "Something went wrong.");
+                                }
+
+                            } catch (err) {
+                                console.error("Invalid JSON response:", text);
+                                toastr.error("Unexpected server response.");
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Fetch failed:", err);
+                            toastr.error("Server error. Please try again later.");
+                        })
+                        .finally(() => {
+                            button.disabled = false;
+                            button.innerHTML = 'Submit';
+                        });
+
+                    });
+                }, 0);
+            }
+        });
+    </script>
+
 @endsection

@@ -29,7 +29,7 @@ class RestoreSessionFromCookie
         $album = null;
 
         foreach (User::latest()->take(100)->get() as $u) {
-            $expected = substr(hash('sha256', env('HASH_SECRET') . $u->album_id . $u->id), 0, 16);
+            $expected = substr(hash('sha256', 'SALT123' . $u->album_id . $u->id), 0, 16);
             if ($expected === $token) {
                 $user = $u;
                 $album = $u->album;

@@ -14,7 +14,7 @@ class ValidateUserAccessToken
         $albumId = $request->route('album');
         $hash = $request->route('hash');
 
-        $expectedHash = substr(hash('sha256', env('HASH_SECRET') . $albumId . $userId), 0, 16);
+        $expectedHash = substr(hash('sha256', 'SALT123' . $albumId . $userId), 0, 16);
 
         if ($hash !== $expectedHash) {
             abort(403, 'Access denied');

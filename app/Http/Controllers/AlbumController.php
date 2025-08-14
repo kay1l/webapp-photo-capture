@@ -12,7 +12,10 @@ class AlbumController extends Controller
 public function show($albumId, $userId, $hash)
 {
 
-    $hash = substr(hash('sha256', env('HASH_SECRET') . $albumId . $userId), 0, 16);
+    $expectedHash = substr(hash('sha256', 'SALT123' . $albumId . $userId), 0, 16);
+    if($hash != $expectedHash ){
+        abort(403, 'Unauthorized access.');
+    }
     $album = Album::findOrFail($albumId);
     $user = User::findOrFail($userId);
 
@@ -21,20 +24,21 @@ public function show($albumId, $userId, $hash)
         ->orderBy('date_add', 'desc')
         ->get();
 
-       
 
+        $promptEmail = empty($user->email);
     return view('album', [
         'album' => $album,
         'user' => $user,
         'captures' => $captures,
         'hash' => $hash,
         'accessType' => $accessType,
+        'promptEmail' => $promptEmail,
 
     ]);
 }
 public function fetchCaptures(Request $request, $albumId, $userId, $hash)
 {
-    $expectedHash = substr(hash('sha256', env('HASH_SECRET') . $albumId . $userId), 0, 16);
+    $expectedHash = substr(hash('sha256', 'SALT123' . $albumId . $userId), 0, 16);
     if ($hash !== $expectedHash) {
         abort(403);
     }
@@ -62,8 +66,3 @@ public function fetchCaptures(Request $request, $albumId, $userId, $hash)
 
 }
 
-
-$secret = "38r34kde3fh7g43d";
-$deviceId = "4";
-$expected_token = substr(hash('sha256', $secret . $deviceId), 0, 16);
-$expected_token;

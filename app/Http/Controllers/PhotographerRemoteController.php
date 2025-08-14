@@ -5,24 +5,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use App\Models\Album;
 use App\Models\User;
+use App\Models\Remote;
 
 class PhotographerRemoteController extends Controller
 {
     public function handleRemote($deviceId, $token)
     {
-        $secret = "38r34kde3fh7g43d";
-        $expected_token = substr(hash('sha256', $secret  . $deviceId), 0, 16);
+
+        $expected_token = substr(hash('sha256', 'SALT123'  . $deviceId), 0, 16);
 
         if($token !== $expected_token) {
             abort(403, 'Invalid Token');
         }
-        $existing = Album::where('remote_id', $deviceId)->where('status' , "live")->first();
+        $remote = Remote::findOrFail($deviceId);
 
+        $existing = Album::where('remote_id', $deviceId)->where('status' , "live")->first();
         if($existing){
             abort(403, 'This device is already in use.');
         }
 
-        $venueId = 1;
+
 
         // Create album record
         $album = Album::create([
@@ -30,7 +32,7 @@ class PhotographerRemoteController extends Controller
             'status' => 'live',
             'date_add' => now(),
             'date_upd' => now(),
-            'venue_id' => $venueId,
+            'venue_id' => $remote->venue_id
         ]);
 
         $path = resource_path('data/names.json');
@@ -41,7 +43,6 @@ class PhotographerRemoteController extends Controller
         }
 
         $randomName = $names[array_rand($names)];
-
 
         $sanitizedEmail = strtolower(str_replace(' ', '.', $randomName)) . rand(1000, 9999) . '@gmail.com';
 
