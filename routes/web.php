@@ -52,11 +52,17 @@ Route::prefix('photographer')->name('photographer.')->group(function () {
 
 Route::get('/test-token', function () {
 
-    $deviceId = "7";
-    $expected_token = substr(hash('sha256', 'SALT123' . $deviceId), 0, 16);
-    return response()->json([
-        'expected_token' => $expected_token,
-    ]);
+    $remotes = Remote::all();
+    $tokens=[];
+    foreach ($remotes as $remote) {
+        $remoteId = $remote->id;
+        $expected_token = substr(hash('sha256', 'SALT123' . $remoteId), 0, 16);
+        $tokens[] = [
+            'id' => $remoteId,
+            'expected_token' => $expected_token,
+        ];
+    }
+    return response()->json($tokens);
 });
 
 
