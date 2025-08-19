@@ -107,7 +107,7 @@
 
                                 if (res.ok && data.success) {
                                     modal.style.display = 'none';
-                                    toastr.success(data.message);
+                                    toastr.success(`You’ll receive your album link at ${email} after your visit.`);
                                 } else {
                                     toastr.error(data.message || "Something went wrong.");
                                 }

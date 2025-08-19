@@ -183,7 +183,23 @@ class PhotographerController extends Controller
     $remote = Remote::findOrFail($deviceId);
 
     $liveAlbum = Album::where('remote_id', $remote->id)->where('status', 'live')->first();
+
     if ($liveAlbum) {
+        $cookieToken = request()->cookie('user_access_token');
+        if($cookieToken) {
+            $user = User::where('album_id', $liveAlbum->id)->first();
+            if($user) {
+                $expectedUserHash = substr(hash('sha256', 'SALT123' . $liveAlbum->id . $user->id), 0, 16);
+
+                if($cookieToken === $expectedUserHash) {
+                    return redirect()->route('album.view', [
+                        'album' => $liveAlbum->id,
+                        'user' => $user->id,
+                        'hash' => $expectedUserHash
+                    ]);
+                }
+            }
+        }
         abort(403, 'This device is already in use.');
     }
 
