@@ -24,15 +24,15 @@ services:
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        value: dpg-d20hp8nfte5s738uclsg-a.oregon-postgres.render.com
+        value: dpg-d2kkjr75r7bs73cnb68g-a.oregon-postgres.render.com
       - key: DB_PORT
         value: 5432
       - key: DB_DATABASE
         value: photographdb
       - key: DB_USERNAME
-        value: photographdb_user
+        value: photographdb_2ogv_user
       - key: DB_PASSWORD
-        value: whBSohOZoccanTwv5FljwgnPYuuo1uTV
+        value: pBBN83VBhHcUKcCFAQOuvND3W51fRLBm
 
       - key: SESSION_DRIVER
         value: database
