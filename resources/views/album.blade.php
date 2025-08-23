@@ -132,4 +132,30 @@
         });
     </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const tokenName = "user_access_token";
+
+        // 🔁 Restore cookie from localStorage if it's missing
+        const storedToken = localStorage.getItem(tokenName);
+        const currentCookie = getCookie(tokenName);
+
+        if (storedToken && !currentCookie) {
+            document.cookie = `${tokenName}=${storedToken}; path=/; max-age=43200;`;
+            location.reload(); // Reload so Laravel sees the restored cookie
+        }
+
+        // 📝 Save token from cookie to localStorage (only if not already stored)
+        if (!storedToken && currentCookie) {
+            localStorage.setItem(tokenName, currentCookie);
+        }
+
+        function getCookie(name) {
+            const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            return match ? match[2] : null;
+        }
+    });
+</script>
+
+
 @endsection
